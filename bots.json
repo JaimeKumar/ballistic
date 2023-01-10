@@ -1,0 +1,474 @@
+{
+   "A bird logo": {
+      "TWITTER": 100,
+      "OVO": 100,
+      "HOLLISTER": 99
+   },
+   "a french noun": {
+      "BAGUETTE": 100,
+      "FROMAGE": 95,
+      "CHAMPIGNON": 85
+   },
+   "a Premier league football team": {
+      "ARSENAL": 104,
+      "NEWCASTLE": 100,
+      "CHELSEA": 104,
+      "WATFORD": 65,
+      "LIVERPOOL": 104,
+      "NOTTINGHAM FOREST": 95,
+      "MAN UTD": 95,
+      "MAN CITY": 95
+   },
+   "a Country without 'land' in its name": {
+      "FRANCE": 95
+   },
+   "a Way to serve egg": {
+      "SCRAMBLED": 100,
+      "FRIED": 100,
+      "POACHED": 95,
+      "HARD BOILED": 90
+   },
+   "a Dish you would find at an Indian restaurant": {
+      "VINDALOO": 99,
+      "CHICKEN TIKKA MASALA": 100,
+      "PILAU RICE": 95,
+      "KORMA": 90
+   },
+   "a Dish you would find at a Chinese restaurant": {
+      "EGG FRIED RICE": 100,
+      "LEMON CHICKEN": 95,
+      "CRISPY SHREDDED BEEF": 95,
+      "JASMINE RICE": 95
+   },
+   "a Cocktail": {
+      "MOJITO": 100,
+      "SCREWDRIVER": 100,
+      "MARGERITA": 100,
+      "WHITE RUSSIAN": 100,
+      "RUM SOUR": 100,
+      "OLD FASHIONED": 100,
+      "WHISKEY SOUR": 100,
+      "DAIQUIRI": 100,
+      "PORNSTAR MARTINI": 100,
+      "SEX ON THE BEACH": 100,
+      "NEGRONI": 100,
+      "LONG ISLAND ICE TEA": 100,
+      "ESPRESSO MARTINI": 100
+   },
+   "a Tube station on the Central Line": {
+      "BANK": 95
+   },
+   "a Tube station on the Northern Line": {
+      "TOOTING BEC": 100,
+      "CLAPHAM COMMON": 95,
+      "MORDERN": 90
+   },
+   "a Tube station on the Bakerloo Line": {
+      "ELEPHANT & CASTLE": 100
+   },
+   "a Chocolate bar": {
+      "MARS": 100,
+      "KIT KAT": 100,
+      "MILKYWAY": 100,
+      "DOUBLE DECKER": 100,
+      "LION BAR": 100,
+      "BOOST": 95,
+      "AERO": 95
+   },
+   "a Crisp flavour": {
+      "READY SALTED": 100,
+      "CHEESE AND ONION": 85,
+      "PRAWN COCKTAIL": 95,
+      "SALT & VINEGAR": 90
+   },
+   "a Designer brand": {
+      "RALPH LAUREN": 95,
+      "GUCCI": 99
+   },
+   "a Mode of transport": {
+      "TRAIN": 95,
+      "PLANE": 95,
+      "BIKE": 95,
+      "HANG GLIDING": 95,
+      "BUS": 95,
+      "HELICOPTER": 95,
+      "BOAT": 95,
+      "HORSEBACK": 95,
+      "HOT AIR BALLOON": 95
+   },
+   "a Metal": {
+      "GOLD": 95,
+      "ALUMINIUM": 95,
+      "BRONZE": 70
+   },
+   "a Sandwich filling": {
+      "HAM": 100,
+      "CHEESE": 100,
+      "BEEF": 100,
+      "LETTUCE": 100,
+      "TOMATOES": 100,
+      "SALAMI": 100,
+      "TURKEY": 95,
+      "CRISPS": 95,
+      "PICKLES": 95
+   },
+   "a Movie baddy": {
+      "JOKER": 95,
+      "GREEN GOBLIN": 95,
+      "JAWS": 95
+   },
+   "a Rapper without 'lil' in their name": {
+      "EMINEM": 100,
+      "MAC MILLER": 95,
+      "TYLER THE CREATOR": 99
+   },
+   "a Reality show": {
+      "BIG BROTHER": 100,
+      "LOVE ISLAND": 100,
+      "TRAITOR": 100,
+      "X FACTOR": 100,
+      "TOO HOT TO HANDLE": 95,
+      "SURVIVOR": 95
+   },
+   "a UK game show": {
+      "TIPPING POINT": 100,
+      "WHO WANTS TO BE A MILLIONAIRE": 95
+   },
+   "a Famous Irish person": {
+      "LOUIS WALSH": 100,
+      "CILLIAN MURPHY": 100,
+      "LIAM NEESON": 90,
+      "OSCAR WILDE": 99
+   },
+   "a White rapper": {
+      "EMINEM": 100,
+      "MAC MILLER": 100,
+      "ASHER ROTH": 95,
+      "LOGIC": 100,
+      "POST MALONE": 100,
+      "KID ROCK": 100,
+      "WOODY ALLEN": 100,
+      "LUNAR C": 100,
+      "YELLAWOLF": 100,
+      "EXAMPLE": 100,
+      "DEVLIN": 100,
+      "LIL DICKY": 100,
+      "MIKE SKINNER": 95
+   },
+   "a type of Quality Street": {
+      "THE PURPLE ONE": 100,
+      "GREEN TRIANGLE": 75,
+      "ORANGE CREAM": 75,
+      "TOFFEE GOLD COIN": 95,
+      "THE COCONUT ONE": 95
+   },
+   "a Gift from the 'Twelve Days Of Christmas'": {
+      "SEVEN SWANS A SWIMMING": 100,
+      "A PARTRIDGE IN A PEAR TREE": 100,
+      "12 LADIES DANCING": 100,
+      "THREE FRENCH HENS": 100,
+      "TWO TURTLE DOVES": 95,
+      "A PARTRIDGE ON A PEAR TREE": 100
+   },
+   "a square on a Monolopy board": {
+      "MAYFAIR": 95,
+      "OLD KENT ROAD": 99,
+      "ANGEL ISLINGTON": 90,
+      "REGENT STREET": 95
+   },
+   "a US state without the letter 'e'": {
+      "MICHIGAN": 95,
+      "MISSISSIPPI": 75,
+      "CALIFORNIA": 90,
+      "IDAHO": 75,
+      "OHIO": 75,
+      "NEW BALTIMORE": 75,
+      "MONTANA": 75,
+      "RHODE ISLAND": 75,
+      "SOUTH CAROLINA": 75,
+      "SOUTH DAKOTA": 75,
+      "NORTH CAROLINA": 75
+   },
+   "a Capital City": {
+      "LONDON": 100,
+      "BAKU": 100,
+      "DUBLIN": 99,
+      "ACCRA": 95
+   },
+   "a McDonalds menu item": {
+      "BIG MAC": 95,
+      "FILLET O FISH": 95,
+      "MCNUGGETS": 100,
+      "CHICKEN LEGEND": 60,
+      "CHEESEBURGER": 80,
+      "MABURGER": 95,
+      "HAMBURGER": 100,
+      "QUARTER POUNDER": 95,
+      "CHIPS": 95,
+      "MCFLURRY": 99
+   },
+   "a Drake song": {
+      "MY SIDE": 95,
+      "HOTLINE BLING": 95,
+      "FAKE LOVE": 95,
+      "GOD'S PLAN": 90
+   },
+   "a Character from F.R.I.E.N.D.S": {
+      "RACHEL": 100,
+      "GUNTHER": 95
+   },
+   "a Pasta shape": {
+      "FUSILLI": 95,
+      "TORTELLINI": 95,
+      "PENNE": 95
+   },
+   "a Word only containing letters from the name of the person to your left": {
+      "EGGS": 100,
+      "BARK": 99,
+      "BREAD": 95,
+      "SIP": 95
+   },
+   "a Body part that can be false": {
+      "LEG": 100,
+      "EYES": 95,
+      "LIPS": 65,
+      "ASS": 90,
+      "HIP": 70,
+      "HEAD": 85,
+      "KNEE": 90,
+      "EYE": 95
+   },
+   "a type of fish": {
+      "COD": 95,
+      "PLAICE": 95,
+      "GOLDFISH": 95
+   },
+   "a type of wine": {
+      "MALBEC": 100,
+      "SAUVIGNON BLANC": 100,
+      "SHIRAZ": 95
+   },
+   "a brand of beer": {
+      "BUDWEISER": 95,
+      "CARLING": 95
+   },
+   "a reason to call 999": {
+      "BEING ROBBED": 95,
+      "BEING MURDERED": 95,
+      "A FIRE": 95
+   },
+   "a pizza topping": {
+      "PEPPORONI": 100,
+      "PINEAPPPLE": 95,
+      "BACON": 95,
+      "HAM": 99,
+      "MUSHROOMS": 100,
+      "JALAPENOS": 100,
+      "SAUSAGE": 100,
+      "RED ONION": 104,
+      "BEANS": 95,
+      "CHEESE": 95,
+      "ANCHOVIES": 99,
+      "CHICKEN": 90
+   },
+   "a kitchen utencil": {
+      "KNIFE": 95
+   },
+   "a country in south america": {
+      "PERU": 95,
+      "BRAZIL": 95
+   },
+   "an animal you would lose a fight to": {
+      "SHARK": 100,
+      "KANGAROO": 100,
+      "LION": 100,
+      "TIGER": 100,
+      "HIPPO": 100,
+      "PANTHER": 95,
+      "MAMMOTH": 95,
+      "COBRA": 95,
+      "DRAGON": 85
+   },
+   "an animal you could ride": {
+      "HORSE": 100,
+      "CAMEL": 100,
+      "ELEPHANT": 100,
+      "MAMMOTH": 95,
+      "DONKEY": 95,
+      "WHALE": 85
+   },
+   "an oscar-winning film": {
+      "TITANIC": 95,
+      "REVENANT": 95,
+      "DUNE": 80,
+      "AVATAR": 100,
+      "CASABLANCA": 90,
+      "LORD OF THE RINGS": 95,
+      "PARASITE": 100,
+      "JOKER": 95,
+      "UP": 95,
+      "BOHEMIAN RHAPSODY": 95
+   },
+   "an emotion": {
+      "SADNESS": 100,
+      "EXCITEMENT": 100,
+      "HAPPINESS": 95,
+      "FEAR": 95,
+      "ANXIETY": 95,
+      "ANGER": 95
+   },
+   "an internal organ": {
+      "LIVER": 95,
+      "HEART": 90,
+      "KIDNEY": 75,
+      "LUNGS": 75
+   },
+   "an Element of a Roast Dinner": {
+      "POTATOES": 95,
+      "TURKEY": 75,
+      "YORKSHIRE PUDDING": 75
+   },
+   "an Airline": {
+      "BRITISH AIRWAYS": 100,
+      "BA": 100,
+      "AIR LINGUS": 100,
+      "VIRGIN": 100,
+      "AIR QUANTAS": 100,
+      "RYAN AIR": 100,
+      "EASYJET": 100,
+      "AIR CHUNGUS": 90
+   },
+   "an Item you would find in a handbag": {
+      "LIPSTICK": 95,
+      "RECIEPTS": 100,
+      "PURSE": 100,
+      "MONEY": 100,
+      "CREDIT CARD": 95,
+      "TAMPONS": 99
+   },
+   "something that is Frowned upon (but not fireable) in the workplace": {
+      "FARTING": 95,
+      "STRIPPING": 95,
+      "DOING THE MINIMUM": 100,
+      "WEARING DIRTY CLOTHES": 100,
+      "SHOWING BABY PICTURES": 100,
+      "STEALING STAPLES": 90,
+      "ADDRESSING YOUR BOSS BY THEIR FIRST NAME": 90,
+      "CRYING LOUDLY": 90
+   },
+   "someThing you would be arrested for doing in Tesco": {
+      "THEIVERY": 95,
+      "FILIMING A TIKTOK": 95,
+      "MURDER": 95,
+      "PRETENDING TO WORK THERE": 95
+   },
+   "someThing that would worry you if it was red": {
+      "TEARS": 100,
+      "MY STOOL": 100,
+      "SKIN": 100
+   },
+   "someThing you pull": {
+      "A HANDLE": 100,
+      "CHAIN FLUSH": 100,
+      "A SICKY": 100,
+      "GIRLS": 95,
+      "YOURSELF TOGETHER": 95
+   },
+   "something you could throw for 40 metres": {
+      "A ROCK": 95,
+      "A CRICKET BALL": 95,
+      "PAPER AIRPLANE": 75,
+      "BASEBALL": 85,
+      "AMERICAN FOOTBALL": 95,
+      "A BOOMERANG": 95,
+      "JAVELIN": 95,
+      "A DART": 95,
+      "NERF THROWY THING": 90,
+      "A SHOE": 99
+   },
+   "something that would kill you if you ate it": {
+      "POISON": 95,
+      "KNIVES": 95,
+      "RAW CHICKEN": 95
+   },
+   "something you can plug in": {
+      "KETTLE": 95,
+      "TOASTER": 95,
+      "LAPTOP": 95,
+      "KEYBOARD": 95,
+      "LAMP": 95
+   },
+   "something you would pack for a summer holiday": {
+      "TRUNKS": 95,
+      "SUNGLASSES": 100,
+      "SUNSCREEN": 100,
+      "A HAT": 85,
+      "SANDALS": 95,
+      "CAMERA": 100,
+      "GOGGLES": 95,
+      "SOCKS": 100,
+      "UNDERWEAR": 95,
+      "T-SHIRTS": 100,
+      "TOOTHPASTE": 95,
+      "SHIRTS": 100
+   },
+   "something you sit on": {
+      "SEAT": 95
+   },
+   "a term for the male genitalia": {
+      "NSFW": true,
+      "penis": 95,
+      "PENIS": 75,
+      "SCHLONG": 80,
+      "DICK": 75,
+      "COCK": 75,
+      "3RD LEG": 75,
+      "BALLS": 75,
+      "FIVESKIN": 70,
+      "STICK": 95
+   },
+   "a Colloquial term for breasts": {
+      "NSFW": true,
+      "boobs": 95,
+      "JUGS": 95,
+      "BOOBS": 95
+   },
+   "a Swearword": {
+      "NSFW": true,
+      "shit": 95,
+      "SHIT": 95,
+      "CUNT": 99
+   },
+   "a Famous person you would definitely beat in a fight": {
+      "NSFW": true,
+      "tom holland": 95,
+      "SIMON COWELL": 95
+   },
+   "a Form of torture": {
+      "NSFW": 0,
+      "waterboarding": 95,
+      "ELECTROCUTION": 100,
+      "WATERBOARDING": 100
+   },
+   "a Fetish": {
+      "NSFW": true,
+      "feet": 95,
+      "FEET": 100,
+      "LATEX": 99
+   },
+   "an illegal drug": {
+      "NSFW": true,
+      "cocaine": 95,
+      "HEROIN": 80,
+      "ANGEL DUST": 90,
+      "WEED": 100,
+      "COCAINE": 100,
+      "ECSTASY": 100,
+      "XANEX": 100,
+      "METH": 95,
+      "FENTANYL": 100,
+      "CODEINE": 90,
+      "SPEED": 95,
+      "OXYCONTIN": 95
+   }
+}
