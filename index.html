@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: white">
+	<head>
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+		<title>BALLISTIC</title>
+		<link rel="icon" href="client/favicon.ico">
+		<link rel="stylesheet" href="client/balisticStyle.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Work+Sans">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+	</head>
+
+   <body>
+      <div id="home" class="page" style="display: block">
+         <div class="indexContainer">
+            <div class="logo" style="max-width: 200px; top: 9%;"></div>
+            <div class="buttons">
+					<button id="findButton" class="indexButton" name="find" onclick="changePage('find')">Find Room</button>
+					<p id="findInfo" class="infoText">Find a public game</p>
+					<button id="joinButton" class="indexButton" name="join" onclick="changePage('join')">Join Room</button>
+					<p id="joinInfo" class="infoText">Find a private game</p>
+               <button id="createButton" class="indexButton" name="create" onclick="changePage('create')">Create Room</button>
+					<p id="createInfo" class="infoText">Create a private game</p>
+               <button id="instButton" class="indexButton" name="instruct" onclick="changePage('instructions')">Instructions</button>
+					<p id="instInfo" class="infoText">A breif rundown</p>
+               <button class="indexButton" name="suggest" onclick="suggestTrigger()" style="font-size: 8pt;">suggest a category</button>
+            </div>
+         </div>
+			<div id="cookieDialogue" class="cookieDialogue">
+				<div id="cookieBox" class="cookieBox">
+					<span id="cookieText" style="font-size: 1.1rem">
+						Would you like to rejoin your game?
+					</span>
+					<br/><br/>
+					<button type="button" class="cookieButton" onclick="cookieReply(true)">YES</button>
+					<button type="button" class="cookieButton" onclick="cookieReply(false)">NO</button>
+				</div>
+			</div>
+      </div>
+
+		<div id="find" class="page">
+			<div class="indexContainer">
+				<div class="logo" onclick="changePage('home')"></div>
+				<!-- <button class="backButton" name="back" onclick="changePage('home')"><</button> -->
+				<form class="createGameBox" action="javascript:void(0);">
+					<h1>Your Name</h1>
+					<input id="findName" value="" class="name" type="text" name="name" maxlength="9" autocomplete="off" required>
+					<br/><br/>
+					<h1 style="margin-bottom: 0px;">Family Friendly</h1>
+					<label class="switch">
+					  <input id="findFF" type="checkbox">
+					  <span class="slider"></span>
+					</label>
+					<br/><br/>
+					<input type="submit" value="PLAY" onclick="findRoom()">
+					<br/><br/>
+				</form>
+			</div>
+		</div>
+
+		<div id="join" class="page">
+			<div class="indexContainer">
+				<div class="logo" onclick="changePage('home')"></div>
+				<!-- <button class="backButton" name="back" onclick="changePage('home')"><</button> -->
+				<form class="createGameBox" action="javascript:void(0);">
+					<h1>Your Name</h1>
+					<input id="joinName" value="" class="name" type="text" name="name" maxlength="9" autocomplete="off" required>
+					<br/><br/>
+					<h1>Room Name</h1>
+					<input id="joinLobbyName" value="" class="name" type="text" name="lobbyName" maxlength="9" autocomplete="off" required>
+					<br/><br/>
+					<input type="submit" value="JOIN" onclick="joinLobby()">
+					<br/><br/>
+				</form>
+			</div>
+		</div>
+
+      <div id="create" class="page">
+         <div class="indexContainer">
+            <div class="logo" onclick="changePage('home')"></div>
+				<!-- <button class="backButton" name="back" onclick="changePage('home')"><</button> -->
+            <form class="createGameBox" action="javascript:void(0);">
+					<br/><br/>
+               <h1>Your Name</h1>
+               <input id="name" value="" class="name" type="text" name="name" maxlength="9" autocomplete="off" required>
+               <br/><br/>
+               <h1>Room Name</h1>
+               <input id="lobbyName" value="" class="name" type="text" name="lobbyName" maxlength="9" autocomplete="off" required>
+               <br/><br/>
+               <h1 style="margin-bottom: 0px;">Family Friendly</h1>
+					<label class="switch">
+					  <input id="createFF" type="checkbox">
+					  <span class="slider"></span>
+					</label>
+               <br/>
+					<br/>
+               <h1>Winning points</h1>
+               <div class="quantitySelector">
+						<div class="quantityOperator" onclick="quantityOperator(-5)">-</div>
+						<div id="nPoints" class="num">30</div>
+						<div class="quantityOperator" onclick="quantityOperator(5)">+</div>
+               </div>
+               <br/><br/>
+               <input type="submit" value="CREATE" onclick="createLobby()">
+            </form>
+         </div>
+      </div>
+
+		<div id="instructions" class="page">
+			<div class="indexContainer">
+				<div class="logo" onclick="changePage('home')"></div>
+				<div class="instructionsBox">
+					<!-- <h1 style="text-align: center; font-size: 1.6rem">HOW TO PLAY:</h1>
+					<br/> -->
+					<span>Each round, a new category will appear.</span>
+					<span>One by one, each player in the game will have a chance to add an item to the list.</span>
+					<span>Each player has one skip per round, but if everyone votes to skip, the round will skip and a new category will be provided.</span>
+					<span>You also have the option to challenge the last answer on the list. This will trigger a vote to all players in the game.</span>
+					<span>If the group decides the answer was valid, the challenger will be out until the next round. If the answer is deemed wrong then the player who gave the answer will be out.</span>
+					<br/>
+					<button class="indexButton" name="back" style="height: 6%;" onclick="changePage('home')">BACK</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="suggest" class="page">
+			<div class="indexContainer">
+				<div class="logo" onclick="changePage('home')"></div>
+				<!-- <button class="backButton" name="back" onclick="changePage('home')"><</button> -->
+				<form class="createGameBox" action="javascript:void(0);">
+					<h1>Suggest a category:</h1>
+					<textarea class="suggestBox" id="suggestBox" maxlength="70" value=""> </textarea>
+					<div style="width: 165px;">
+						<span id="charsRemaining" class="charsRemaining">70</span>
+					</div>
+					<br/><br/>
+					<input type="submit" value="Submit" onclick="suggest()">
+					<br/><br/>
+				</form>
+			</div>
+		</div>
+
+      <div id="change" class="page">
+         <div class="indexContainer">
+            <div class="logo" onclick="changePage('home')"></div>
+
+            <form class="createGameBox" action="javascript:void(0);">
+					<br/><br/>
+               <h1>Family Friendly</h1>
+					<label class="switch">
+					  <input id="changeFF" type="checkbox">
+					  <span class="slider"></span>
+					</label>
+               <br/>
+					<br/>
+               <h1>Winning points</h1>
+               <select id="changePoints" class="selector" name="winningPoints" required>
+                  <option value="20">20</option>
+                  <option value="25">25</option>
+                  <option value="30" selected="selected">30</option>
+                  <option value="35">35</option>
+                  <option value="40">40</option>
+                  <option value="45">45</option>
+                  <option value="50">50</option>
+               </select>
+               <br/><br/>
+               <input type="submit" value="CONFIRM" onclick="changeRules()">
+            </form>
+         </div>
+      </div>
+
+		<div id="play" class="page">
+			<section>
+				<button id="settingsButton" class="settingsButton" name="back" onclick="settings()">&#8801;</button>
+				<button id="leaveButton" class="backButton" name="back" onclick="leave()">X</button>
+				<div id="roomID" class="roomID"></div>
+				<div class="logo"></div>
+				<div class="container">
+					<div class="container" id="mainGame" style="height: 90%; top: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+						<h1 class="category" id="category"></h1>
+						<div class="listBox" id="listContainer">
+							<div class="listDiv" id="listDiv" style="top: 0px;"></div>
+						</div>
+
+						<input id="inputBox" class="inputBox" type="text" name="" placeholder="wait your turn">
+
+						<div id="base-timer" class="base-timer">
+							<svg class="base-timer__svg" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+								<g class="base-timer__circle">
+									<circle id="colourTimer" class="base-timer__path-elapsed" cx="5" cy="5" r="4"/>
+									<path
+							        id="greyTimer"
+							        stroke-dasharray="0 25"
+							        class="base-timer__path-remaining"
+							        d="
+							          M 5, 5
+							          m -4, 0
+							          a 4,4 0 1,0 8,0
+							          a 4,4 0 1,0 -8,0
+							        "
+							      ></path>
+								</g>
+							</svg>
+							<span id="timer" class="timer">15</span>
+						</div>
+
+						<button id="readyButton" type="button" style="transition: 0.2s; z-index: 1000; visibility: hidden;" onclick="sendReady()">READY</button>
+						<span id="readyCount"style="min-height: 30px; max-width: 300px; text-align: center;"></span>
+					</div>
+				</div>
+				<div id="voteDialogue" class="cookieDialogue">
+					<div id="voteBox" class="cookieBox">
+						<span id="votePromptText" style="font-size: 1.1rem">
+							Skip this category?
+						</span>
+						<br/><br/>
+						<button type="button" class="cookieButton" onclick="votePromptReply(true)">YES</button>
+						<button type="button" class="cookieButton" onclick="votePromptReply(false)">NO</button>
+					</div>
+				</div>
+				<div id="kbContainer" class="kbContainer kbContainer--hidden">
+					<div class="keyboard">
+						<div class="kbRow" style="width: 100%;">
+							<button type="button" class="letter" onclick="sendLetter('q')">Q</button>
+							<button type="button" class="letter" onclick="sendLetter('w')">W</button>
+							<button type="button" class="letter" onclick="sendLetter('e')">E</button>
+							<button type="button" class="letter" onclick="sendLetter('r')">R</button>
+							<button type="button" class="letter" onclick="sendLetter('t')">T</button>
+							<button type="button" class="letter" onclick="sendLetter('y')">Y</button>
+							<button type="button" class="letter" onclick="sendLetter('u')">U</button>
+							<button type="button" class="letter" onclick="sendLetter('i')">I</button>
+							<button type="button" class="letter" onclick="sendLetter('o')">O</button>
+							<button type="button" class="letter" onclick="sendLetter('p')">P</button>
+						</div>
+						<div class="kbRow" style="width: 90%; left: 5%;">
+							<div class="spacer"></div>
+							<button type="button" class="letter" onclick="sendLetter('a')">A</button>
+							<button type="button" class="letter" onclick="sendLetter('s')">S</button>
+							<button type="button" class="letter" onclick="sendLetter('d')">D</button>
+							<button type="button" class="letter" onclick="sendLetter('f')">F</button>
+							<button type="button" class="letter" onclick="sendLetter('g')">G</button>
+							<button type="button" class="letter" onclick="sendLetter('h')">H</button>
+							<button type="button" class="letter" onclick="sendLetter('j')">J</button>
+							<button type="button" class="letter" onclick="sendLetter('k')">K</button>
+							<button type="button" class="letter" onclick="sendLetter('l')">L</button>
+						</div>
+						<div class="kbRow" style="width: 100%; left: 15%;">
+							<button type="button" id="skip" class="shift" style="width: 15vw;" onclick="sendLetter('skip')">SKIP</button>
+							<button type="button" class="letter" onclick="sendLetter('z')">Z</button>
+							<button type="button" class="letter" onclick="sendLetter('x')">X</button>
+							<button type="button" class="letter" onclick="sendLetter('c')">C</button>
+							<button type="button" class="letter" onclick="sendLetter('v')">V</button>
+							<button type="button" class="letter" onclick="sendLetter('b')">B</button>
+							<button type="button" class="letter" onclick="sendLetter('n')">N</button>
+							<button type="button" class="letter" onclick="sendLetter('m')">M</button>
+							<button type="button" class="shift" style="width: 15vw;" onclick="sendLetter('backspace')">&#9003;</button>
+						</div>
+						<div class="kbRow" style="width: 100%;">
+							<button type="button" id="chall" class="chall" style="font-size: 11pt;" onclick="sendLetter('challenge')">CHALLENGE</button>
+							<button type="button" class="space" onclick="sendLetter('sp')">SPACE</button>
+							<button type="button" class="chall" onclick="sendLetter('send')">SEND</button>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<div id="vote" class="page">
+			<div class="indexContainer">
+				<div class="logo"></div>
+				<div class="voteContainer">
+					<h1 id="voteText" style="font-size: 1.2rem;"></h1>
+					<br/>
+					<br/>
+					<div class="voteBTNS">
+						<div class="voteYes" id="voteyes" onclick="vote(0)"></div>
+						<div class="voteNo" id="voteno" onclick="vote(1)"></div>
+					</div>
+					<div class="voteTimer">
+						<div id="voteTimerIn" class="voteTimerIn">
+						</div>
+						<div id="voteTimer" class="voteTimerNum">
+							30
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="chatPage" class="page" style="top: 50%; height: 50%; max-width: 400px; left: 50%; transform: translateX(-50%);">
+			<div class="chatBox">
+				<div class="chatList" id="chatList">
+				</div>
+				<div id="chatInput" class="chatInput" contenteditable="true" onclick="this.innerText=''; this.style.color = '#000000';">click to chat</div>
+			</div>
+			<div id="turnGUI" class="turnGUI">
+			</div>
+		</div>
+
+		<div id="scoreboard" class="page">
+			<div class="indexContainer">
+				<div class="logo"></div>
+				<div class="scoreboard">
+					<h1 style='font-size: 1.2rem; text-decoration: underline; position: absolute; top: 0;'>
+						SCORES
+					</h1>
+					<span id="firstTo" style="position: absolute; top: 30px; font-size: 0.85rem; opacity: 0.7;">FIRST TO 30</span>
+					<div id="sb">
+
+					</div>
+				</div>
+				<div class="finishButtons">
+					<button id="winAgain" class="finishButton" type="button" onclick="endGame('play')">PLAY AGAIN</button>
+					<button id="winExit" class="finishButton" type="button" onclick="endGame('home')">EXIT</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="voteResult" class="page">
+			<div class="indexContainer">
+				<div class="logo"></div>
+				<div class="voteContainer">
+					<h1 style='font-size: 1.2rem; border-bottom: 2px solid #000000aa; height: 32px;'>
+						VOTE RESULTS
+					</h1>
+					<div class="voteSides">
+						<div class="voteSide" style="left: 0; border-left: 2px solid #000000aa; border-right: 1px solid #000000aa;"></div>
+						<div class="voteSide" style="right: 0; border-right: 2px solid #000000aa; border-left: 1px solid #000000aa;"></div>
+					</div>
+					<div class="voteHeaders">
+						<h1 class="voteTitle" style="left: 0;">
+							YES
+						</h1>
+						<h1 class="voteTitle" style="right: 0;">
+							NO
+						</h1>
+					</div>
+					<br/>
+					<div id="voteList" class="voteList">
+
+					</div>
+
+					<span id="voteMessage" class="voteMessage"></span>
+				</div>
+			</div>
+		</div>
+
+		<div id="fader" class="fader"></div>
+
+      <script src="/socket.io/socket.io.js"></script>
+
+		<script>
+
+   		var socket = io();
+			var answer = "";
+			var myName;
+			var roomName;
+			var room = {};
+			var active = false;
+			var admin = false;
+			var page = '';
+			var pages = [
+				document.getElementById('home'),
+				document.getElementById('create'),
+				document.getElementById('change'),
+				document.getElementById('join'),
+				document.getElementById('scoreboard'),
+				document.getElementById('vote'),
+				document.getElementById('voteResult'),
+				document.getElementById('instructions'),
+				document.getElementById('play'),
+				document.getElementById('find'),
+				document.getElementById('suggest')
+			]
+			var playToggle = false;
+			var lastWinner;
+			var nPoints = 30;
+			var settingsTrigger = false;
+			var isPublic = false;
+			var chatStage;
+			var voteClock;
+
+			function settings() {
+				if (!settingsTrigger) {
+					document.getElementById('roomID').style.opacity = 1;
+					document.getElementById('leaveButton').style.opacity = 1;
+					document.getElementById('leaveButton').style.pointerEvents = 'all';
+					settingsTrigger = true;
+				} else {
+					document.getElementById('roomID').style.opacity = 0;
+					document.getElementById('leaveButton').style.opacity = 0;
+					document.getElementById('leaveButton').style.pointerEvents = 'none';
+					settingsTrigger = false;
+				}
+			}
+
+			function leave() {
+				if (confirm('Are you sure you want to leave this game?') == true) {
+					socket.emit('exit');
+					document.getElementById('chatPage').style.display = "none";
+					changePage('home');
+				}
+				settings();
+			}
+
+			function changePage(target) {
+				if (target != page) {
+					document.getElementById('fader').classList.add('in');
+					setTimeout(function(){
+						pages.forEach((ele, i) => {
+							// ele.style.visibility = "hidden";
+							ele.style.display = "none";
+						});
+						// document.getElementById(target).style.visibility = "visible";
+						document.getElementById(target).style.display = "block";
+						setTimeout(function() {
+							document.getElementById('fader').classList.add('out');
+							setTimeout(function(){
+								document.getElementById('fader').classList.remove('in');
+								document.getElementById('fader').classList.remove('out');
+							}, 650)
+						}, 700)
+
+					}, 650);
+					page = target;
+					socket.emit('updatePage', target);
+				}
+			};
+
+			function findRoom() {
+				let ff = document.getElementById('findFF').checked;
+				if (document.getElementById('findName').value != "") {
+					myName = document.getElementById('findName').value;
+					socket.emit('find', {
+						name: document.getElementById('findName').value,
+						ff: ff
+					});
+				} else {
+					shake('findName');
+				};
+			};
+
+			function joinLobby() {
+				document.getElementById('listDiv').innerHTML = "";
+				if (document.getElementById('joinName').value != "" && document.getElementById('joinLobbyName').value != "") {
+					myName = document.getElementById('joinName').value;
+					roomName = document.getElementById('joinLobbyName').value;
+					socket.emit('join', {
+						name: myName,
+						roomName: document.getElementById('joinLobbyName').value
+					});
+				};
+
+			};
+
+         function createLobby() {
+				admin = true;
+            let ff = document.getElementById('createFF').checked;
+
+				if (document.getElementById('name').value != "" && document.getElementById('lobbyName').value != "") {
+					myName = document.getElementById('name').value;
+					roomName = document.getElementById('lobbyName').value;
+					socket.emit('createLobby', {
+						name: myName,
+						lobby: document.getElementById('lobbyName').value,
+						familyFriendly: ff,
+						maxpoints: document.getElementById('nPoints').innerHTML
+					});
+				};
+         };
+
+			function changeRules() {
+				let ff = document.getElementById('changeFF').checked;
+
+				socket.emit('changeRules', {
+					familyFriendly: ff,
+					maxpoints: document.getElementById('changePoints').value,
+					nPlayers: document.getElementById('changePlayers').value
+				});
+
+				document.getElementById('inputBox').placeholder = "waiting for others";
+				newRoundInit();
+				changePage('play');
+			};
+
+			function quantityOperator(add) {
+				nPoints += add;
+				if (nPoints > 50) {
+					nPoints = 50;
+				} else if (nPoints < 10) {
+					nPoints = 10;
+				}
+				document.getElementById('nPoints').innerHTML = nPoints;
+			};
+
+			function sendReady() {
+				document.getElementById('readyButton').style.visibility = "hidden";
+				document.getElementById('readyCount').innerHTML = "";
+				socket.emit('ready');
+			};
+
+			function sendLetter(letter) {
+				if (active) {
+					if (letter == "skip") {
+						document.getElementById('skip').style.pointerEvents = 'none';
+						document.getElementById('skip').style.color = 'silver';
+						document.getElementById('skip').style.backgroundColor = "Gainsboro";
+						socket.emit('skip');
+					} else if (letter=="sp") {
+						// answer += " ";
+						// document.getElementById("inputBox").value = answer;
+						document.getElementById("inputBox").value += " ";
+					} else if (letter=="challenge") {
+						socket.emit('challenge');
+					} else if (letter=="backspace") {
+						// answer = answer.slice(0, -1);
+						// document.getElementById("inputBox").value = answer;
+						document.getElementById("inputBox").value = document.getElementById("inputBox").value.slice(0, -1);
+					} else if (letter=="send") {
+						socket.emit('answer', document.getElementById("inputBox").value);
+					} else {
+						// answer += letter;
+						// document.getElementById("inputBox").value = answer;
+						document.getElementById("inputBox").value += letter;
+					};
+				};
+			};
+
+			function shake(id) {
+				document.getElementById(id).classList.add('active-animation');
+				let shakeTimeout = setTimeout(function() {
+					document.getElementById(id).classList.remove('active-animation');
+				}, 300);
+			};
+
+			function vote(ans) {
+				clearInterval(voteClock);
+				let data = {
+					vote: ans,
+					name: myName
+				}
+				document.getElementById('chatPage').style.display = "none";
+				socket.emit('voteReply', data);
+				changePage('voteResult');
+			};
+
+			function newRoundInit(pub) {
+				document.getElementById('chatPage').style.display = "block";
+
+				// if (pub) {
+				// 	document.getElementById('chatPage').style.display = "block";
+				// };
+				document.getElementById('listDiv').innerHTML = "";
+				document.getElementById('category').innerHTML = "";
+				document.getElementById('skip').style.pointerEvents = 'all';
+				document.getElementById('skip').style.color = 'pink';
+				document.getElementById('skip').style.backgroundColor = 'white';
+				document.getElementById('base-timer').style.visibility = "hidden";
+				document.getElementById('kbContainer').classList.add('kbContainer--hidden');
+				// document.getElementById('kbContainer').style.visibility = "hidden";
+				// document.getElementById('kbContainer').style.pointerEvents = "none";
+				active = false;
+				document.getElementById('inputBox').disabled = true;
+				document.getElementById('inputBox').style.backgroundColor = '#eeeeeeff';
+				document.getElementById('inputBox').value = "";
+				if (!document.getElementById('inputBox').placeholder == "waiting for others") {
+					document.getElementById('inputBox').placeholder = "wait your turn";
+				};
+			};
+
+			function endGame(target) {
+				if (target=="home") {
+					if (playToggle) {
+						changePage('change');
+					} else {
+						changePage('home');
+						socket.emit('exit');
+					};
+					document.getElementById('winAgain').style.opacity = '0';
+					document.getElementById('winExit').style.opacity = '0';
+				} else if (target=="play") {
+					if (admin && !playToggle) {
+						document.getElementById('winAgain').innerHTML = 'PLAY';
+						document.getElementById('winExit').innerHTML = 'CHANGE RULES';
+						playToggle = true;
+					} else {
+						playToggle = false;
+						socket.emit('again');
+						document.getElementById('inputBox').placeholder = "waiting for others";
+						newRoundInit();
+						changePage('play');
+						document.getElementById(lastWinner).style.transform = 'scale(1)';
+						document.getElementById('winAgain').style.opacity = '0';
+						document.getElementById('winExit').style.opacity = '0';
+						document.getElementById('winAgain').innerHTML = 'PLAY AGAIN';
+						document.getElementById('winExit').innerHTML = 'EXIT';
+					};
+				} else if (target=="change") {
+					changePage('change');
+				};
+			};
+
+			function sendChat() {
+				let chat = document.getElementById('chatInput').innerHTML;
+
+				socket.emit('chat', chat);
+
+				document.getElementById('chatInput').style.color = "#696969";
+				document.getElementById('chatInput').innerHTML = "click to chat";
+				document.getElementById("chatInput").blur();
+			};
+
+			function cookieReply(ans) {
+				if (ans) {
+					socket.emit('confirmRejoin', room.index);
+				} else {
+					socket.emit('denyRejoin', room.index);
+				}
+				document.getElementById('cookieDialogue').style.visibility = "hidden";
+			}
+
+			function votePromptReply(ans) {
+				if (ans) {
+					socket.emit('skip');
+					document.getElementById('skip').style.pointerEvents = 'none';
+					document.getElementById('skip').style.color = 'silver';
+					document.getElementById('skip').style.backgroundColor = "Gainsboro";
+				}
+				document.getElementById('voteDialogue').style.visibility = "hidden";
+				document.getElementById('chatPage').style.display = chatStage;
+			}
+
+			function suggestTrigger() {
+				document.getElementById('suggestBox').value = "";
+				changePage('suggest');
+			}
+
+			function suggest() {
+				let catSugg = document.getElementById('suggestBox').value;
+				socket.emit('suggest', catSugg);
+				changePage('home');
+			}
+
+			socket.on('changePage', function(page) {
+				changePage(page);
+			});
+
+			socket.on('newRoundInit', function(pub){
+				newRoundInit(pub);
+			});
+
+			socket.on('updateCat', function(category) {
+				document.getElementById('inputBox').placeholder = "wait your turn";
+				document.getElementById('category').innerHTML = category;
+			})
+
+			socket.on('activate', function(data){
+				active = true;
+				document.getElementById('base-timer').style.visibility = "visible";
+				document.getElementById('chatPage').style.display = "none";
+
+				if (data.chall) {
+					document.getElementById('chall').style.backgroundColor = 'white';
+					document.getElementById('chall').style.color = "pink";
+					document.getElementById('chall').style.pointerEvents = 'all';
+				} else {
+					document.getElementById('chall').style.backgroundColor = 'Gainsboro';
+					document.getElementById('chall').style.color = "silver";
+					document.getElementById('chall').style.pointerEvents = 'none';
+				}
+				document.getElementById('inputBox').disabled = false;
+				document.getElementById('inputBox').style.backgroundColor = '#ffffffff';
+				document.getElementById('inputBox').placeholder = "type your answer";
+				document.getElementById("inputBox").value = "";
+				document.getElementById('kbContainer').classList.remove('kbContainer--hidden');
+				// document.getElementById('kbContainer').style.visibility = "visible";
+				// document.getElementById('kbContainer').style.pointerEvents = "all";
+				answer = "";
+			});
+
+			socket.on('nextIndicator', function() {
+				document.getElementById('inputBox').placeholder = "get ready, you're next";
+			});
+
+			socket.on('updateTimer', function(time){
+				document.getElementById('timer').innerHTML = time;
+				let strokeColour = "green";
+				if (time < 4) {
+					strokeColour = "red";
+				} else if (time < 8) {
+					strokeColour = "orange";
+				} else if (time < 11) {
+					strokeColour = "yellow";
+				};
+				document.getElementById("colourTimer").style.stroke = strokeColour;
+				document.getElementById("greyTimer").setAttribute("stroke-dasharray", (((15 - time) * (5/3)) + 1) + " 25");
+			});
+
+			socket.on('out', function(data){
+				document.getElementById('base-timer').style.visibility = "hidden";
+				document.getElementById('kbContainer').classList.add('kbContainer--hidden');
+				// document.getElementById('kbContainer').style.visibility = "hidden";
+				// document.getElementById('kbContainer').style.pointerEvents = "none";
+				document.getElementById('inputBox').disabled = true;
+				document.getElementById('inputBox').style.backgroundColor = '#eeeeeeff';
+				document.getElementById('inputBox').value = "";
+				let expl = "You're out haha";
+				switch (data.reason) {
+					case "time":
+						expl = "You ran out of time"
+						document.getElementById('chatPage').style.display = "block";
+						// if (isPublic) {
+						// 	document.getElementById('chatPage').style.display = "block";
+						// };
+						break;
+					case "vote":
+						expl = "You were voted out"
+						break
+				}
+				document.getElementById('inputBox').placeholder = expl;
+			});
+
+			socket.on('answerHandshake', function(pub){
+				document.getElementById('chatPage').style.display = "block";
+				// if (isPublic) {
+				// 	document.getElementById('chatPage').style.display = "block";
+				// };
+				document.getElementById('base-timer').style.visibility = "hidden";
+				document.getElementById('kbContainer').classList.add('kbContainer--hidden');
+				// document.getElementById('kbContainer').style.visibility = "hidden";
+				// document.getElementById('kbContainer').style.pointerEvents = "none";
+				active = false;
+				document.getElementById('inputBox').disabled = true;
+				document.getElementById('inputBox').style.backgroundColor = '#eeeeeeff';
+				document.getElementById('inputBox').value = "";
+				document.getElementById('inputBox').placeholder = "wait your turn";
+			});
+
+			socket.on('createLobbyHandshake', function(success){
+				if (success) {
+					isPublic = false;
+					document.getElementById('roomID').innerHTML = 'Room: ' + roomName;
+					changePage("play");
+					document.getElementById('category').innerHTML = "";
+					setTimeout(function() {
+						document.getElementById('readyButton').style.visibility = "visible";
+						document.getElementById('readyCount').innerHTML = "Once everyone's here, click 'Ready' to start the game.";
+					}, 700);
+
+					nPoints = 30;
+					document.getElementById('nPoints').innerHTML = nPoints;
+				} else {
+					shake('lobbyName');
+					document.getElementById('lobbyName').placeholder = "Room name taken";
+					document.getElementById('lobbyName').value = "";
+				};
+			});
+
+			socket.on('joinHandshake', function(data) {
+				if (data.success) {
+					isPublic = false;
+					document.getElementById('roomID').innerHTML = 'Room: ' + roomName;
+					changePage("play");
+					document.getElementById('category').innerHTML = "";
+				} else {
+					switch (data.reason) {
+						case "name":
+						document.getElementById('joinName').value = "";
+						document.getElementById('joinName').placeholder = "Name taken";
+						shake('joinName');
+						break;
+						case "room":
+						document.getElementById('joinLobbyName').value = "";
+						document.getElementById('joinLobbyName').placeholder = "Room doesn't exist";
+						shake('joinLobbyName');
+						break;
+						case "full":
+						document.getElementById('joinLobbyName').value = "";
+						document.getElementById('joinLobbyName').placeholder = "Lobby is full";
+						shake('joinLobbyName');
+						break;
+					}
+				}
+			});
+
+			socket.on('findHandshake', function(pack) {
+				if (pack.success) {
+					isPublic = true;
+					roomName = pack.roomName;
+					document.getElementById('roomID').innerHTML = 'Room: ' + roomName;
+					changePage("play");
+					document.getElementById('category').innerHTML = "";
+				} else {
+					shake('findName');
+					document.getElementById('findName').value = "";
+					if (pack.reason == 'taken') {
+						document.getElementById('findName').placeholder = "Name taken";
+					} else if (pack.reason == 'profanity') {
+						document.getElementById('findName').placeholder = "Family Friendly name please";
+					}
+				};
+			});
+
+			socket.on('lobbyFill', function(inners) {
+				document.getElementById('sb').innerHTML = inners.sb;
+				document.getElementById('voteList').innerHTML = inners.vote;
+			})
+
+			socket.on('updateList', function(list) {
+				document.getElementById('listDiv').innerHTML = list;
+				document.getElementById('listContainer').scrollTop = document.getElementById('listContainer').scrollHeight;
+			})
+
+			socket.on('dupe', function(id) {
+				shake(id);
+			})
+
+			socket.on('scoreboard', function(data) {
+
+				document.getElementById('firstTo').innerHTML = "FIRST TO " + data.nPoints;
+
+				document.getElementById('chatPage').style.display = "none";
+				// if (data.public) {
+				// 	document.getElementById('chatPage').style.display = "none";
+				// };
+				changePage('scoreboard');
+				setTimeout(function(){
+					for (var i in data.players) {
+						let sbId = data.players[i].name + "Score";
+						document.getElementById(sbId).style.top = (15 + (i * 10)) + "%";
+						document.getElementById(sbId).innerHTML = data.players[i].name + ": <strong>" + data.players[i].points + "</strong>";
+					};
+					if (data.win) {
+						setTimeout(function() {
+							let winID = data.players[0].name + 'Score';
+							document.getElementById(winID).style.transform = 'translateX(-50%) scale(1.2)';
+							document.getElementById(winID).innerHTML += '<strong> &nbsp &nbsp WINNER!</strong>';
+							document.getElementById('winAgain').style.opacity = '1';
+							document.getElementById('winExit').style.opacity = '1';
+							lastWinner = winID;
+						}, 2000)
+					} else {
+						setTimeout(function(){
+							socket.emit('nextRound');
+							changePage('play');
+						}, 3000);
+					};
+				}, 2500);
+			});
+
+			socket.on('vote', function(info){
+				document.getElementById('voteText').innerHTML = "IS " + info.ans.toString().toUpperCase() + " " + info.cat.toString().toUpperCase() + "?";
+				document.getElementById('voteMessage').innerHTML = "";
+				document.getElementById('chatPage').style.display = "block";
+				// if (isPublic) {
+				// 	document.getElementById('chatPage').style.display = "block";
+				// };
+				document.getElementById('voteTimer').innerHTML = '30';
+				document.getElementById('voteTimerIn').style.top = '0px';
+				changePage('vote');
+				let voteTime = 30;
+				voteClock = setInterval(function() {
+					document.getElementById('voteTimer').innerHTML = voteTime;
+					document.getElementById('voteTimerIn').style.top = ((30 - voteTime) * (4.5/3)) + 'px';
+					voteTime--;
+					if (voteTime < 0) {
+						clearInterval(voteClock);
+						vote(Math.round(Math.random()));
+					}
+				}, 1000);
+			})
+
+			socket.on('result', function(data) {
+				let id = myName + 'Vote';
+				data.playerVotes.forEach((player, i) => {
+					let id = player.name + 'Vote';
+					document.getElementById(id).style.left = ((player.vote * 50) + 5) + "%";
+				});
+
+				setTimeout(function() {
+					document.getElementById('voteMessage').innerHTML = data.message;
+					socket.emit('voteOver');
+					setTimeout(function() {
+						data.playerVotes.forEach((player, i) => {
+							let id = player.name + 'Vote';
+							document.getElementById(id).style.left = "30%";
+						});
+						document.getElementById('chatPage').style.display = "block";
+						// if (isPublic) {
+						// 	document.getElementById('chatPage').style.display = "block";
+						// };
+					}, 5500);
+				}, 2000);
+			});
+
+			socket.on('hasCookie', function(roomData) {
+				room = roomData;
+				document.getElementById('cookieText').innerHTML = "Would you like to rejoin the room '" + roomData.name + "'?";
+				document.getElementById('cookieDialogue').style.visibility = "visible";
+			});
+
+			socket.on('votePrompt', function(cat) {
+				chatStage = document.getElementById('chatPage').style.display;
+				document.getElementById('chatPage').style.display = "none";
+				document.getElementById('votePromptText').innerHTML = "Skip this category? (" + cat + ")";
+				document.getElementById('voteDialogue').style.visibility = "visible";
+			})
+
+			socket.on('rejoin', function(handover) {
+				isPublic = handover.public;
+				myName = handover.name;
+				admin = handover.admin;
+				if (!handover.started && admin) {
+					setTimeout(function() {
+						document.getElementById('readyButton').style.visibility = "visible";
+						document.getElementById('readyCount').innerHTML = "Once everyone's here, click 'Ready' to start the game.";
+					}, 700);
+				};
+			});
+
+			socket.on('updateChat', function(chat) {
+					document.getElementById('chatList').innerHTML = chat;
+					document.getElementById('chatList').scrollTop = document.getElementById('chatList').scrollHeight;
+			});
+
+			socket.on('showChat', function() {
+				setTimeout(function() {
+					document.getElementById('chatPage').style.display = "block";
+				}, 600);
+			});
+
+			socket.on('fillTurnmeter', function(turnHTML) {
+				document.getElementById('turnGUI').innerHTML = turnHTML;
+			})
+
+			socket.on('tickTurnmeter', function(pack) {
+				let timeID = 'turnTimer' + pack.name;
+				let textID = 'turnBlock' + pack.name;
+				document.getElementById(timeID).style.transform = 'translate(' + ((-100/15) * (pack.time)) + '%)';
+				document.getElementById(textID).style.fontWeight = '600';
+				if (pack.time == 15) {
+					document.getElementById(textID).style.fontWeight = 'normal';
+				}
+			})
+
+			socket.on('outTurnmeter', function(name) {
+				let id = 'turnBlock' + name;
+				document.getElementById(id).style.color = '#00000088';
+				document.getElementById(id).style.textDecoration = 'line-through';
+			})
+
+			const chatInput = document.getElementById("chatInput");
+			chatInput.addEventListener("keypress", (event) => {
+				if (event.key === "Enter") {
+					event.preventDefault();
+					sendChat();
+			  	}
+			});
+
+			const inputConst = document.getElementById("inputBox");
+			inputConst.addEventListener("keypress", (event) => {
+				if (event.key === "Enter") {
+					sendLetter('send');
+			  	}
+			});
+
+			const charsRemaining = document.getElementById('charsRemaining');
+			const suggestArea = document.getElementById('suggestBox');
+			if (suggestArea.addEventListener) {
+			  suggestArea.addEventListener('input', function() {
+				  console.log('yes');
+			    charsRemaining.innerHTML = (70 - suggestArea.value.length);
+			  }, false);
+			  suggestArea.addEventListener("keypress", (event) => {
+  				if (event.key === "Enter") {
+  					suggest();
+  			  	}
+  			});
+			} else if (suggestArea.attachEvent) {
+			  suggestArea.attachEvent('onpropertychange', function() {
+			    charsRemaining.innerHTML = (70 - suggestArea.value.length);
+			  });
+			}
+
+      </script>
+
+   </body>
+</html>
