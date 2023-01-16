@@ -1153,7 +1153,7 @@ function isNSFW(name) {
    }
 }
 
-function suggest(suggestion)
+function suggest(suggestion) {
    var addSuggestion = async () => {
       try {
          const client = newClient();
