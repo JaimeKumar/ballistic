@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 var botRows, botNames;
+var dbChanges = [];
 const connectDb = async () => {
    try {
       const client = newClient();
@@ -52,8 +53,8 @@ console.log("server started");
 
 class Room {
    constructor(data) {
-      this.botNames = botNames;
-      this.bots = botRows;
+      this.botNames = [...botNames];
+      this.bots = [...botRows];
       this.lobbyName = data.lobbyName;
       this.nPoints = data.maxPoints;
       this.public = data.public;
@@ -85,15 +86,15 @@ class Room {
 
       this.ansArray = [];
       this.confArray = [];
-      this.ansArrayOG = [];
 
       this.page = 'play';
       this.chatList = "";
       this.started = false;
 
+
       console.log(this.bots.filter(function(row) {
          return (!(row.ans.length == row.confidence.length));
-         }));
+      }));
    }
 
    reInit() {
@@ -142,8 +143,10 @@ class Room {
       this.activePlayer = 0;
       this.fillTurnmeter();
       this.category = this.catList.splice(Math.floor((Math.random() * this.catList.length)), 1)[0];
-      this.ansArray = this.bots.filter(row => row.cat == this.category)[0].ans;
-      this.confArray = this.bots.filter(row => row.cat == this.category)[0].confidence;
+      this.row = [...this.bots.filter(row => row.cat == this.category)][0];
+      console.log(this.row);
+      this.ansArray = [...this.row.ans];
+      this.confArray = [...this.row.confidence];
       this.ansArrayOG = [...this.ansArray];
 
       if (this.catList.length < 1) {
@@ -189,7 +192,9 @@ class Room {
       if (this.activePlayers[active].socket.id in sockArray) {
          this.activePlayers[active].socket.emit('activate', {chall: this.challengable, public: this.public, ff: this.ff});
       } else if (this.activePlayers[active].bot) {
-         this.activePlayers[active].answer = this.ansArray.splice(Math.floor(Math.random() * this.ansArray.length), 1)[0];
+         let spliceIndex = Math.floor(Math.random() * this.ansArray.length);
+         this.activePlayers[active].answer = this.ansArray.splice(spliceIndex, 1)[0];
+         this.activePlayers[active].conf = this.confArray.splice(spliceIndex, 1)[0];
       } else {
          room.challengable = false;
          room.removePlayer(0, 'time');
@@ -205,14 +210,13 @@ class Room {
          if (room.activePlayers[active].socket.id in sockArray) {
             room.activePlayers[active].socket.emit('updateTimer', Math.round(room.time));
          } else if (room.activePlayers[active].bot) {
-            let ansToConf = room.ansArrayOG.indexOf(room.answer);
-            if ((room.ansArrayOG.includes(room.answer)) && room.challengable && (Math.random() * 100 > room.confArray[ansToConf]) && (Math.random() > 0.6)) {
+            if (room.challengable && (Math.random() * 100 > room.conf) && (Math.random() > 0.6)) {
                clearInterval(room.timer);
                challenge(room);
             }
 
             if ((Math.random() > 0.65) && room.time < 11 && room.activePlayers[active].answer != undefined) {
-               room.message({ans: room.activePlayers[active].answer, name: room.activePlayers[active].name});
+               room.message({ans: room.activePlayers[active].answer, conf: room.activePlayers[active].conf, name: room.activePlayers[active].name});
             }
          }
 
@@ -274,9 +278,6 @@ class Room {
          fillArray = fillArray.sort((a, b) => b.points - a.points);
          let stripped = fillArray.map(({name, points, oldPoints}) => ({name, points, oldPoints}));
          let isOver = (stripped[0].points >= this.nPoints);
-         if (isOver) {
-            this.started = false;
-         }
          this.players.forEach((player) => {
             player.socket.emit('scoreboard', {
                players: stripped,
@@ -285,13 +286,18 @@ class Room {
                ff: this.ff,
                nPoints: this.nPoints
             });
+            if (isOver) {
+               this.started = false;
+            }
          });
+         triggerUpdate();
       }
    }
 
    lobbyFill() {
       let scoreInner = "";
       let fillArray = this.players.concat(this.botPlayers);
+      fillArray = fillArray.sort((a, b) => b.oldPoints - a.oldPoints);
       fillArray.forEach((player, i) => {
          scoreInner += "<div id='" + player.name + "Score' style='background: white; transition: 0.7s; min-width: 160px; max-width: 180px; height: 20px; left: 50%; transform: translateX(-50%); color: #ff99a8; font-weight: bold; font-size: 0.8rem; text-align: center; line-height: 20px; vertical-align: middle; position: absolute; top: " + (15 + (i*10)) + "%'>" + player.name + ": <strong>" + player.oldPoints + "</strong></div>";
       });
@@ -311,6 +317,7 @@ class Room {
       if (!this.list.includes(": " + data.ans.trim().toUpperCase() + '<br/>') && data.ans.length > 0) {
          clearInterval(this.timer);
          this.answer = data.ans.trim().toUpperCase();
+         this.conf = data.conf;
          this.list += data.name + ": " + data.ans.trim().toUpperCase() + '<br/>';
          this.players.forEach((player) => {
             player.socket.emit('updateList', this.list);
@@ -341,9 +348,9 @@ class Room {
       this.whosReady++;
       if (this.whosReady >= (this.players.length + this.botPlayers.length)) {
          this.whosReady = 0;
-         if (this.ansArrayOG.includes(this.answer)) {
-            this.affectConf((this.votes * -5));
-         }
+
+         this.affectConf(this.votes * -4);
+
          this.lobbyFill();
          this.voteResult();
       }
@@ -483,10 +490,6 @@ class Room {
    }
 
    chat(msg) {
-      if (msg == '/chall') {
-         clearInterval(this.timer);
-         challenge(this);
-      }
       if (this.ff) {
          msg = msg.toLowerCase().replace(/fuck/g, "****");
          msg = msg.toLowerCase().replace(/fucking/g, "******");
@@ -520,8 +523,13 @@ class Room {
    }
 
    checkStart() {
+      let pNames = this.players.map((p) => (p.name));
+      this.botNames = this.botNames.filter(function(name) {
+         return (pNames.indexOf(name) < 0);
+      });
+
       let room = this;
-      // if (this.players.length > 2 && !this.started) {
+
       if (!this.started) {
          this.started = true;
          let startTimer = 5;
@@ -618,7 +626,6 @@ class Room {
 
    botVote(challenger, challangee) {
       if (this.ansArrayOG.includes(this.answer)) {
-         let ans2Conf = this.ansArrayOG.indexOf(this.answer);
          this.botPlayers.forEach((player) => {
             if (challangee.name == player.name) {
                this.vote({
@@ -629,7 +636,7 @@ class Room {
                player.vote = 0;
                return;
             }
-            if (Math.random() * 100 > this.confArray[ans2Conf] || player.name == challenger) {
+            if (Math.random() * 100 > this.conf || player.name == challenger) {
                this.vote({
                   name: player.name,
                   vote: 1,
@@ -684,65 +691,37 @@ class Room {
    }
 
    takeAnswer(ans) {
-      if (this.ansArrayOG.includes(ans)) {
+      if (this.row.ans.includes(ans)) {
          return;
       }
 
-      this.ansArrayOG.push(ans);
+      this.row.ans.push(ans + "");
+      this.row.confidence.push(95);
 
-      this.confArray.push(95);
+      botRows[this.row.id - 1] = this.row;
 
-      let ansQuery = `
-         UPDATE public.category
-         SET ans = $1
-         WHERE cat = $2;`;
-
-      let confQuery = `
-         UPDATE public.category
-         SET confidence = $1
-         WHERE cat = $2;`;
-
-      let updateAns = async() => {
-         try {
-            const client = newClient();
-            await client.connect();
-            await client.query(ansQuery, [this.ansArrayOG, this.category]);
-            await client.query(confQuery, [this.confArray, this.category]);
-            await client.end();
-         } catch (error) {
-            console.log(error);
-         }
+      if (!(dbChanges.includes(this.category))) {
+         dbChanges.push(this.category);
       }
-      updateAns();
    }
 
    affectConf(amount) {
-      let ans2Conf = this.ansArrayOG.indexOf(this.answer);
-
-      this.confArray[ans2Conf] += amount;
-
-      if (this.confArray[ans2Conf] > 99) {
-         this.confArray[ans2Conf] = 99;
-      } else if (this.confArray[ans2Conf] < 1) {
-         this.confArray[ans2Conf] = 1;
+      let confIndex = this.row.ans.indexOf(this.answer.toUpperCase());
+      if (confIndex > -1) {
+         this.row.confidence[confIndex] += amount;
       }
 
-      let confQuery = `
-         UPDATE public.category
-         SET confidence = $1
-         WHERE cat = $2;`;
-
-      let updateConf = async() => {
-         try {
-            const client = newClient();
-            await client.connect();
-            await client.query(confQuery, [this.confArray, this.category]);
-            await client.end();
-         } catch (error) {
-            console.log(error);
-         }
+      if (this.row.confidence[confIndex] > 99) {
+         this.row.confidence[confIndex] = 99;
+      } else if (this.row.confidence[confIndex] < 1) {
+         this.row.confidence[confIndex] = 1;
       }
-      updateConf();
+
+      botRows[this.row.id - 1] = this.row;
+
+      if (!(dbChanges.includes(this.category))) {
+         dbChanges.push(this.category);
+      }
    }
 }
 
@@ -1103,7 +1082,7 @@ function takeName(name) {
 function challenge(room) {
    clearInterval(room.timer);
 
-   if (room.ansArray.includes(room.answer) && !(room.activePlayers[room.activePlayer].bot)) {
+   if (room.ansArrayOG.includes(room.answer) && !(room.activePlayers[room.activePlayer].bot)) {
       room.affectConf(-5);
    } else {
       console.log("bot challenge");
@@ -1183,4 +1162,34 @@ function newClient() {
       port: 5432,
       ssl: true
    });
+}
+
+function triggerUpdate() {
+   let buildQuery = '';
+   let ansBuild = [];
+   let confBuild = [];
+
+   dbChanges.forEach((category, i) => {
+      ansBuild.push(`'{` + (botRows.filter(row => row.cat == category)[0].ans.toString()) + `}'`);
+      confBuild.push(`'{` + (botRows.filter(row => row.cat == category)[0].confidence.toString()) + `}'`);
+   });
+
+
+
+   dbChanges.forEach((category, i) => {
+      buildQuery += `UPDATE public.category SET ans = ` + ansBuild[i] + `, confidence = ` + confBuild[i] + ` WHERE cat = '` + category + `'; `;
+   });
+
+   var updateDB = async() => {
+      try {
+         const client = newClient();
+         await client.connect();
+         await client.query(buildQuery);
+         await client.end();
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
+   updateDB();
 }
