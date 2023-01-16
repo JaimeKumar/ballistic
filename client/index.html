@@ -26,7 +26,7 @@
 					<p id="createInfo" class="infoText">Create a private game</p>
                <button id="instButton" class="indexButton" name="instruct" onclick="changePage('instructions')">Instructions</button>
 					<p id="instInfo" class="infoText">A breif rundown</p>
-               <button class="indexButton" name="suggest" onclick="changePage('suggest')" style="font-size: 0.7rem;">suggest a category</button>
+               <button class="indexButton" name="suggest" onclick="suggestTrigger()" style="font-size: 0.7rem;">suggest a category</button>
             </div>
          </div>
 			<div id="cookieDialogue" class="cookieDialogue">
@@ -132,8 +132,10 @@
 				<!-- <button class="backButton" name="back" onclick="changePage('home')"><</button> -->
 				<form class="createGameBox" action="javascript:void(0);">
 					<h1>Suggest a category:</h1>
-					<!-- <input id="suggestbox" value="" class="name" type="text" name="name" maxlength="50" autocomplete="off" required> -->
-					<textarea class="suggestbox" id="suggestbox" maxlength="70" value=""> </textarea>
+					<textarea class="suggestBox" id="suggestBox" maxlength="70" value=""> </textarea>
+					<div style="width: 165px;">
+						<span id="charsRemaining" class="charsRemaining">70</span>
+					</div>
 					<br/><br/>
 					<input type="submit" value="Submit" onclick="suggest()">
 					<br/><br/>
@@ -288,7 +290,7 @@
 			</div>
 		</div>
 
-		<div id="chatPage" class="page" style="top: 50%; height: 50%;">
+		<div id="chatPage" class="page" style="top: 50%; height: 50%; max-width: 400px; left: 50%; transform: translateX(-50%);">
 			<div class="chatBox">
 				<div class="chatList" id="chatList">
 				</div>
@@ -380,7 +382,6 @@
 			var isPublic = false;
 			var chatStage;
 			var voteClock;
-
 
 			function settings() {
 				if (!settingsTrigger) {
@@ -562,6 +563,8 @@
 				// document.getElementById('kbContainer').style.visibility = "hidden";
 				// document.getElementById('kbContainer').style.pointerEvents = "none";
 				active = false;
+				document.getElementById('inputBox').disabled = true;
+				document.getElementById('inputBox').style.backgroundColor = '#eee';
 				document.getElementById('inputBox').value = "";
 				if (!document.getElementById('inputBox').placeholder == "waiting for others") {
 					document.getElementById('inputBox').placeholder = "wait your turn";
@@ -630,8 +633,13 @@
 				document.getElementById('chatPage').style.display = chatStage;
 			}
 
+			function suggestTrigger() {
+				document.getElementById('suggestBox').value = "";
+				changePage('suggest');
+			}
+
 			function suggest() {
-				let catSugg = document.getElementById('suggestbox').value;
+				let catSugg = document.getElementById('suggestBox').value;
 				socket.emit('suggest', catSugg);
 				changePage('home');
 			}
@@ -663,6 +671,8 @@
 					document.getElementById('chall').style.color = "silver";
 					document.getElementById('chall').style.pointerEvents = 'none';
 				}
+				document.getElementById('inputBox').disabled = false;
+				document.getElementById('inputBox').style.backgroundColor = '#fff';
 				document.getElementById('inputBox').placeholder = "type your answer";
 				document.getElementById("inputBox").value = "";
 				document.getElementById('kbContainer').classList.remove('kbContainer--hidden');
@@ -694,6 +704,8 @@
 				document.getElementById('kbContainer').classList.add('kbContainer--hidden');
 				// document.getElementById('kbContainer').style.visibility = "hidden";
 				// document.getElementById('kbContainer').style.pointerEvents = "none";
+				document.getElementById('inputBox').disabled = true;
+				document.getElementById('inputBox').style.backgroundColor = '#eee';
 				document.getElementById('inputBox').value = "";
 				let expl = "You're out haha";
 				switch (data.reason) {
@@ -721,6 +733,8 @@
 				// document.getElementById('kbContainer').style.visibility = "hidden";
 				// document.getElementById('kbContainer').style.pointerEvents = "none";
 				active = false;
+				document.getElementById('inputBox').disabled = true;
+				document.getElementById('inputBox').style.backgroundColor = '#eee';
 				document.getElementById('inputBox').value = "";
 				document.getElementById('inputBox').placeholder = "wait your turn";
 			});
@@ -952,6 +966,24 @@
 					sendLetter('send');
 			  	}
 			});
+
+			const charsRemaining = document.getElementById('charsRemaining');
+			const suggestArea = document.getElementById('suggestBox');
+			if (suggestArea.addEventListener) {
+			  suggestArea.addEventListener('input', function() {
+				  console.log('yes');
+			    charsRemaining.innerHTML = (70 - suggestArea.value.length);
+			  }, false);
+			  suggestArea.addEventListener("keypress", (event) => {
+  				if (event.key === "Enter") {
+  					suggest();
+  			  	}
+  			});
+			} else if (suggestArea.attachEvent) {
+			  suggestArea.attachEvent('onpropertychange', function() {
+			    charsRemaining.innerHTML = (70 - suggestArea.value.length);
+			  });
+			}
 
       </script>
 

@@ -1,11 +1,52 @@
-const fs = require('fs');
 const favicon = require('serve-favicon');
 const express = require('express');
 const session = require('express-session');
 const app = express();
 const serv = require('http').Server(app);
+const {Client} = require('pg');
+const dotenv = require('dotenv');
+dotenv.config();
 
-var botNames = fs.readFileSync('botNames.json');
+// const fs = require('fs');
+// var _botNames = fs.readFileSync('botNames.json');
+// var botNames = JSON.parse(_botNames);
+//
+// var rawBots = fs.readFileSync('botsNSFW.json');
+// var bots = JSON.parse(rawBots);
+
+var botRows, botNames;
+const connectDb = async () => {
+   try {
+      const client = newClient();
+      await client.connect();
+
+      const nameResult = await client.query(`SELECT * FROM public.botnames`);
+      const nameRows = nameResult.rows;
+      botNames = nameRows.map(function(row) {
+         return row.botname;
+      })
+
+      const botRes = await client.query(`SELECT * FROM public.category`);
+      botRows = botRes.rows;
+
+
+      // const thisQuery = `
+      //       INSERT INTO public.category (cat, ans, confidence, nsfw)
+      //       VALUES ($1, $2, $3, $4)
+      //       RETURNING id
+      // `;
+      // await client.query(thisQuery, [botcat, thiskeys, thisvals, true]);
+
+      // const res = await client.query(`SELECT * FROM public.botnames`);
+      // console.log(res.rows);
+
+      await client.end();
+   } catch (error) {
+      console.log(error);
+   }
+}
+
+connectDb();
 
 app.use(favicon(__dirname + '/client/favicon.ico'));
 
@@ -29,9 +70,11 @@ console.log("server started");
 
 class Room {
    constructor(data) {
-      this.botNames = JSON.parse(botNames);
-      this.rawBots = fs.readFileSync('bots.json');
-      this.bots = JSON.parse(this.rawBots);
+      this.botNames = botNames;
+      this.bots = botRows;
+      // console.log(this.bots);
+      // this.rawBots = fs.readFileSync('bots.json');
+      // this.bots = JSON.parse(this.rawBots);
       this.lobbyName = data.lobbyName;
       this.nPoints = data.maxPoints;
       this.public = data.public;
@@ -51,18 +94,27 @@ class Room {
       this.time = 15;
       this.ff = data.ff;
       if (this.ff) {
-         for (var item in this.bots) {
-            if ("NSFW" in this.bots[item]) {
-               delete this.bots[item];
+         for (var i = this.bots.length - 1; i >= 0; i--) {
+            if (this.bots[i].nsfw) {
+               this.bots.splice(i, 1);
             }
          }
       }
-      this.catList = Object.keys(this.bots);
+      this.catList = this.bots.map(function(row) {
+         return row.cat;
+      });
+
       this.ansArray = [];
+      this.confArray = [];
+      this.ansArrayOG = [];
 
       this.page = 'play';
       this.chatList = "";
       this.started = false;
+
+      console.log(this.bots.filter(function(row) {
+         return (!(row.ans.length == row.confidence.length));
+         }));
    }
 
    reInit() {
@@ -107,13 +159,18 @@ class Room {
       this.roundSize = this.players.length + this.botPlayers.length;
       this.activePlayers = [...this.players];
       this.activePlayers.push.apply(this.activePlayers, this.botPlayers);
+      this.activePlayers = this.activePlayers.sort((a, b) => b.points - a.points);
       this.activePlayer = 0;
       this.fillTurnmeter();
       this.category = this.catList.splice(Math.floor((Math.random() * this.catList.length)), 1)[0];
-      this.ansArray = Object.keys(this.bots[this.category]);
+      this.ansArray = this.bots.filter(row => row.cat == this.category)[0].ans;
+      this.confArray = this.bots.filter(row => row.cat == this.category)[0].confidence;
+      this.ansArrayOG = [...this.ansArray];
 
-      if (this.catList.length < 2) {
-         this.catList = Object.keys(this.bots);
+      if (this.catList.length < 1) {
+         this.catList = this.bots.map(function(row) {
+            return row.cat;
+         });
       }
       this.countdown(this);
    }
@@ -169,13 +226,13 @@ class Room {
          if (room.activePlayers[active].socket.id in sockArray) {
             room.activePlayers[active].socket.emit('updateTimer', Math.round(room.time));
          } else if (room.activePlayers[active].bot) {
-
-            if ((room.answer in room.bots[room.category]) && room.challengable && (Math.random() * 100 > room.bots[room.category][room.answer]) && (Math.random() > 0.6)) {
+            let ansToConf = room.ansArrayOG.indexOf(room.answer);
+            if ((room.ansArrayOG.includes(room.answer)) && room.challengable && (Math.random() * 100 > room.confArray[ansToConf]) && (Math.random() > 0.6)) {
                clearInterval(room.timer);
                challenge(room);
             }
 
-            if ((Math.random() > 0.7) && room.time < 11 && room.activePlayers[active].answer != undefined && room.activePlayers[active].answer != 'NSFW') {
+            if ((Math.random() > 0.65) && room.time < 11 && room.activePlayers[active].answer != undefined) {
                room.message({ans: room.activePlayers[active].answer, name: room.activePlayers[active].name});
             }
          }
@@ -257,7 +314,7 @@ class Room {
       let scoreInner = "";
       let fillArray = this.players.concat(this.botPlayers);
       fillArray.forEach((player, i) => {
-         scoreInner += "<div id='" + player.name + "Score' style='background: white; transition: 0.7s; min-width: 160px; max-width: 180px; height: 20px; left: 50%; transform: translateX(-50%); color: #ff99a8; font-weight: bold; font-size: 0.8rem; text-align: center; line-height: 20px; vertical-align: middle; position: absolute; top: " + (23 + (i*9)) + "%'>" + player.name + ": <strong>" + player.oldPoints + "</strong></div>";
+         scoreInner += "<div id='" + player.name + "Score' style='background: white; transition: 0.7s; min-width: 160px; max-width: 180px; height: 20px; left: 50%; transform: translateX(-50%); color: #ff99a8; font-weight: bold; font-size: 0.8rem; text-align: center; line-height: 20px; vertical-align: middle; position: absolute; top: " + (15 + (i*10)) + "%'>" + player.name + ": <strong>" + player.oldPoints + "</strong></div>";
       });
 
       let voteInner = "";
@@ -279,17 +336,7 @@ class Room {
          this.players.forEach((player) => {
             player.socket.emit('updateList', this.list);
          });
-         if (this.category in this.bots) {
-            if (!(this.answer in this.bots[this.category])) {
-               this.bots[this.category][this.answer] = 95;
-            } else if (this.bots[this.category][this.answer] < 100) {
-               this.bots[this.category][this.answer] += 5;
-            }
-
-            var writeData = JSON.stringify(this.bots, null, 3);
-            fs.writeFileSync('bots.json', writeData);
-         }
-
+         this.takeAnswer(this.answer);
          this.updateTurnmeter(this.activePlayers[this.activePlayer].name, 15);
          this.activePlayer = this.wrapIndex(this.activePlayer, 1);
          this.challengable = true;
@@ -315,17 +362,8 @@ class Room {
       this.whosReady++;
       if (this.whosReady >= (this.players.length + this.botPlayers.length)) {
          this.whosReady = 0;
-         if (this.category in this.bots) {
-            if ((this.answer in this.bots[this.category]) && !data.bot) {
-               this.bots[this.category][this.answer] -= this.votes * 5;
-               if (this.bots[this.category][this.answer] > 99) {
-                  this.bots[this.category][this.answer] = 99;
-               } else if (this.bots[this.category][this.answer] < 1) {
-                  this.bots[this.category][this.answer] = 1;
-               }
-               var writeData = JSON.stringify(this.bots, null, 3);
-               fs.writeFileSync('bots.json', writeData);
-            }
+         if (this.ansArrayOG.includes(this.answer)) {
+            this.affectConf((this.votes * -5));
          }
          this.lobbyFill();
          this.voteResult();
@@ -466,6 +504,10 @@ class Room {
    }
 
    chat(msg) {
+      if (msg == '/chall') {
+         clearInterval(this.timer);
+         challenge(this);
+      }
       if (this.ff) {
          msg = msg.toLowerCase().replace(/fuck/g, "****");
          msg = msg.toLowerCase().replace(/fucking/g, "******");
@@ -525,9 +567,10 @@ class Room {
                startTimer--;
             } else {
                clearInterval(pubStart);
-               if (room.players.length + room.botPlayers.length < 3) {
-                  let amount = 3 - (room.players.length + room.botPlayers.length);
-                  for (var i = 0; i <= amount; i++) {
+               let l = (room.players.length + room.botPlayers.length);
+               if (l < 3) {
+                  let amount = 3 - l;
+                  for (var i = 0; i < amount; i++) {
                      let botname = room.botNames.splice(Math.floor(Math.random() * room.botNames.length), 1);
                      room.botPlayers.push({
                         name: botname[0],
@@ -541,7 +584,6 @@ class Room {
                      room.chat('<i>' + botname + ' joined' + '</i> <br/>');
                   }
                }
-               let l = (room.players.length + room.botPlayers.length);
                if (l > 8)  {
                   room.nPoints = 30;
                } else if (l > 6) {
@@ -596,9 +638,9 @@ class Room {
    }
 
    botVote(challenger, challangee) {
-      if (this.answer in this.bots[this.category]) {
+      if (this.ansArrayOG.includes(this.answer)) {
+         let ans2Conf = this.ansArrayOG.indexOf(this.answer);
          this.botPlayers.forEach((player) => {
-            // console.log(challenger, challangee, player.name);
             if (challangee.name == player.name) {
                this.vote({
                   name: player.name,
@@ -608,7 +650,7 @@ class Room {
                player.vote = 0;
                return;
             }
-            if (Math.random() * 100 > this.bots[this.category][this.answer] || player.name == challenger) {
+            if (Math.random() * 100 > this.confArray[ans2Conf] || player.name == challenger) {
                this.vote({
                   name: player.name,
                   vote: 1,
@@ -661,6 +703,68 @@ class Room {
          p.socket.emit('outTurnmeter', name);
       })
    }
+
+   takeAnswer(ans) {
+      if (this.ansArrayOG.includes(ans)) {
+         return;
+      }
+
+      this.ansArrayOG.push(ans);
+
+      this.confArray.push(95);
+
+      let ansQuery = `
+         UPDATE public.category
+         SET ans = $1
+         WHERE cat = $2;`;
+
+      let confQuery = `
+         UPDATE public.category
+         SET confidence = $1
+         WHERE cat = $2;`;
+
+      let updateAns = async() => {
+         try {
+            const client = newClient();
+            await client.connect();
+            await client.query(ansQuery, [this.ansArrayOG, this.category]);
+            await client.query(confQuery, [this.confArray, this.category]);
+            await client.end();
+         } catch (error) {
+            console.log(error);
+         }
+      }
+      updateAns();
+   }
+
+   affectConf(amount) {
+      let ans2Conf = this.ansArrayOG.indexOf(this.answer);
+
+      this.confArray[ans2Conf] += amount;
+
+      if (this.confArray[ans2Conf] > 99) {
+         this.confArray[ans2Conf] = 99;
+      } else if (this.confArray[ans2Conf] < 1) {
+         this.confArray[ans2Conf] = 1;
+      }
+
+      let confQuery = `
+         UPDATE public.category
+         SET confidence = $1
+         WHERE cat = $2;`;
+
+      let updateConf = async() => {
+         try {
+            const client = newClient();
+            await client.connect();
+            await client.query(confQuery, [this.confArray, this.category]);
+            await client.end();
+         } catch (error) {
+            console.log(error);
+         }
+      }
+      updateConf();
+   }
 }
 
 var rooms = [];
@@ -683,9 +787,6 @@ io.sockets.on('connection', function(socket) {
       socket.id = Math.random();
       sockArray[socket.id] = socket;
    }
-
-   // socket.id = Math.random()
-   // sockArray[socket.id] = socket;
 
    socket.on('disconnect', function() {
       if ('lobbyIndex' in socket && typeof rooms[socket.lobbyIndex] != 'undefined') {
@@ -774,13 +875,11 @@ io.sockets.on('connection', function(socket) {
          };
       }
 
-
       let publicRooms = rooms.filter(room => room.public == true);
       let roomsWithSpace = publicRooms.filter(room => room.players.length < 9);
       let roomNameSend;
 
       roomsWithSpace = roomsWithSpace.filter(room => room.ff == data.ff);
-
 
       if (roomsWithSpace.length < 1) {
          let pubName = Math.random()
@@ -938,11 +1037,7 @@ io.sockets.on('connection', function(socket) {
    });
 
    socket.on('suggest', function(cat) {
-      var suggestionFile = fs.readFileSync('suggestions.json');
-      var suggestions = JSON.parse(suggestionFile);
-      suggestions.push(cat);
-      var suggestionsNew = JSON.stringify(suggestions, null, 3);
-      fs.writeFileSync('suggestions.json', suggestionsNew);
+      suggest(cat);
    })
 });
 
@@ -1001,23 +1096,38 @@ function wasteRemoval() {
 }
 
 function takeName(name) {
-   // botNames.push(name);
-   // db.update({doc: 'botNames'}, {$set: {data: botNames}});
-   let oldBotNames = JSON.parse(botNames);
-   if (!(oldBotNames.includes(name)) && !isNSFW(name)) {
-      oldBotNames.push(name);
-      var botnameData = JSON.stringify(oldBotNames, null, 3);
-      fs.writeFileSync('botNames.json', botnameData);
+
+   if (botNames.includes(name)) {
+      return;
    }
+
+   var takeit = async () => {
+      try {
+         const client = newClient();
+         await client.connect();
+
+         const thisQuery = `
+               INSERT INTO public.botnames (botname, nsfw)
+               VALUES ($1, $2)
+               RETURNING id
+         `;
+         await client.query(thisQuery, [name, isNSFW(name)]);
+         await client.end();
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
+   takeit();
 }
 
 function challenge(room) {
    clearInterval(room.timer);
 
-   if (room.answer in room.bots[room.category]) {
-      room.bots[room.category][room.answer] -= 5;
-      var writeData = JSON.stringify(room.bots, null, 3);
-      fs.writeFileSync('bots.json', writeData);
+   if (room.ansArray.includes(room.answer) && !(room.activePlayers[room.activePlayer].bot)) {
+      room.affectConf(-5);
+   } else {
+      console.log("bot challenge");
    }
 
    let challangee = room.activePlayers[room.wrapIndex(room.activePlayer, -1)];
@@ -1062,4 +1172,37 @@ function isNSFW(name) {
    } else {
       return false;
    }
+}
+
+function suggest(suggestion) {
+   console.log('reached func');
+   var addSuggestion = async () => {
+      try {
+         const client = newClient();
+         await client.connect();
+
+         const thisQuery = `
+               INSERT INTO public.suggestions (suggestion)
+               VALUES ($1)
+               RETURNING id
+         `;
+         await client.query(thisQuery, [suggestion]);
+         await client.end();
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
+   addSuggestion();
+}
+
+function newClient() {
+   return new Client({
+      user: process.env.PGUSER,
+      host: process.env.PGHOST,
+      database: process.env.PGDATABASE,
+      password: process.env.PGPASSWORD,
+      port: process.env.PGPORT,
+      ssl: true
+   });
 }
