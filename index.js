@@ -7,13 +7,6 @@ const {Client} = require('pg');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// const fs = require('fs');
-// var _botNames = fs.readFileSync('botNames.json');
-// var botNames = JSON.parse(_botNames);
-//
-// var rawBots = fs.readFileSync('botsNSFW.json');
-// var bots = JSON.parse(rawBots);
-
 var botRows, botNames;
 const connectDb = async () => {
    try {
@@ -28,17 +21,6 @@ const connectDb = async () => {
 
       const botRes = await client.query(`SELECT * FROM public.category`);
       botRows = botRes.rows;
-
-
-      // const thisQuery = `
-      //       INSERT INTO public.category (cat, ans, confidence, nsfw)
-      //       VALUES ($1, $2, $3, $4)
-      //       RETURNING id
-      // `;
-      // await client.query(thisQuery, [botcat, thiskeys, thisvals, true]);
-
-      // const res = await client.query(`SELECT * FROM public.botnames`);
-      // console.log(res.rows);
 
       await client.end();
    } catch (error) {
@@ -72,9 +54,6 @@ class Room {
    constructor(data) {
       this.botNames = botNames;
       this.bots = botRows;
-      // console.log(this.bots);
-      // this.rawBots = fs.readFileSync('bots.json');
-      // this.bots = JSON.parse(this.rawBots);
       this.lobbyName = data.lobbyName;
       this.nPoints = data.maxPoints;
       this.public = data.public;
@@ -1174,8 +1153,7 @@ function isNSFW(name) {
    }
 }
 
-function suggest(suggestion) {
-   console.log('reached func');
+function suggest(suggestion)
    var addSuggestion = async () => {
       try {
          const client = newClient();
@@ -1198,11 +1176,11 @@ function suggest(suggestion) {
 
 function newClient() {
    return new Client({
-      user: process.env.PGUSER,
-      host: process.env.PGHOST,
-      database: process.env.PGDATABASE,
-      password: process.env.PGPASSWORD,
-      port: process.env.PGPORT,
+      user: 'ballistic_db_user',
+      host:'dpg-ceupgf94reb3j70ld7k0-a.frankfurt-postgres.render.com',
+      database: 'ballistic_db',
+      password: '6YxlhAEA8sOVjHna35Z5fNuKUue0MFL2',
+      port: 5432,
       ssl: true
    });
 }
