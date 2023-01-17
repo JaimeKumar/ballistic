@@ -23,6 +23,12 @@ body {
 	overflow-y: hidden;
 }
 
+@media screen and (max-device-width: 480px){
+  body{
+    -webkit-text-size-adjust: none;
+  }
+}
+
 section {
 	height: 100%;
 	display: flex;
@@ -361,7 +367,6 @@ input:checked + .slider:before {
 	height: 30px;
 	line-height: 30px;
 	background: white;
-	-webkit-text-size-adjust: none;
 }
 
 .indexButton:active {
