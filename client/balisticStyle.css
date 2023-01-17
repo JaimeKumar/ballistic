@@ -356,7 +356,7 @@ input:checked + .slider:before {
 	transition: 0.2s;
 	color: #000000dd;
 	width: 10%;
-	min-width: 140px;
+	min-width: 150px;
 	font-weight: bold;
 	height: 30px;
 	line-height: 30px;
