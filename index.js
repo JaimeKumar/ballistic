@@ -337,7 +337,11 @@ class Room {
       if (!data.bot) {
          let ind = this.players.map(player => player.name).indexOf(data.name);
          this.players[ind].vote = data.vote;
-         this.affectConf(data.vote * -4);
+         if (data.vote) {
+            this.affectConf(-4);
+         } else {
+            this.affectConf(4);
+         }
       }
 
       if (data.vote) {
@@ -706,6 +710,7 @@ class Room {
 
    affectConf(amount) {
       let confIndex = this.row.ans.indexOf(this.answer.toUpperCase());
+      console.log('befor: ' + this.row.confidence[confIndex]);
       if (confIndex > -1) {
          this.row.confidence[confIndex] += amount;
       }
@@ -716,6 +721,7 @@ class Room {
          this.row.confidence[confIndex] = 1;
       }
 
+      console.log('after: ' + this.row.confidence[confIndex]);
       botRows[this.row.id - 1] = this.row;
 
       if (!(dbChanges.includes(this.category))) {
