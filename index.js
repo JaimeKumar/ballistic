@@ -337,6 +337,7 @@ class Room {
       if (!data.bot) {
          let ind = this.players.map(player => player.name).indexOf(data.name);
          this.players[ind].vote = data.vote;
+         this.affectConf(data.vote * -4);
       }
 
       if (data.vote) {
@@ -348,8 +349,6 @@ class Room {
       this.whosReady++;
       if (this.whosReady >= (this.players.length + this.botPlayers.length)) {
          this.whosReady = 0;
-
-         this.affectConf(this.votes * -4);
 
          this.lobbyFill();
          this.voteResult();
@@ -538,7 +537,7 @@ class Room {
                room.players.forEach((player) => {
                   player.socket.emit('updateCat', 'Game starting in: ' + startTimer);
                })
-               if ((Math.random() > 0.7) && room.players.length + room.botPlayers.length < 5) {
+               if ((Math.random() > 0.65) && room.players.length + room.botPlayers.length < 5) {
                   let botname = room.botNames.splice(Math.floor(Math.random() * room.botNames.length), 1);
                   room.botPlayers.push({
                      name: botname[0],
